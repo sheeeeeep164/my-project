@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <style>
+        body {
+            background-color: darkgray;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 50px;
+        }
+
+        #bgc {
+            margin: 0 auto;
+            background-color: #6798f3f5;
+            width: 70%;
+        }
+
+        .que_title {
+            padding: 10px 15px;
+            font-size: 30px;
+        }
+
+        .que {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            align-items: center;
+            font-size: 50px;
+        }
+
+        .num {
+
+            padding: 0px 40px;
+            font-weight: bolder;
+            letter-spacing: 5px;
+        }
+
+        .ans {
+            display: flex;
+            justify-content: space-evenly;
+            font-size: 30px;
+        }
+
+        .ansbox {
+            width: 60%;
+            text-align: center;
+            font-size: 30px;
+
+        }
+        .result{
+            display: flex;
+            justify-content: space-around;
+            margin: 0 auto;
+            background: gray;
+            width: 540px;
+        }
+
+        .hide{
+            display: none;
+        }
+
+        .footer {
+            margin: 15px auto;
+            display: flex;
+            justify-content: space-around;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>數學小遊戲</h1>
+    <hr>
+    <div id="bgc">
+        <div class="que_title">Question <span id="queNum">1</span></div>
+        <div class="que">
+            <span id="num1" class="num">A</span><span id="ope">+</span><span id="num2" class="num">B</span>
+        </div>
+        <div class="ans">
+            <span class="equal">=</span><input type="text" id="anstxt" class="ansbox" autofocus>
+        </div>
+        <hr color="gray">
+        <div class="control">
+            <div class="footer">
+                <span id="time">剩餘時間:0s</span>
+                <button id="btn_start">遊戲開始</button>
+                <span>成績分數:<span id="combo">:0</span></span>
+
+            </div>
+        </div>
+    </div>
+    <div class="result hide" id="result_score">
+        <div>正確：<span id="right_count"></span></div>
+        <div>錯誤：<span id="wrong_count"></span></div>
+        <div>總分：<span id="total_score"></span></div>
+    </div>
+    <script>
+        var time = document.getElementById("time");
+        var combo = document.getElementById("combo");
+        var ope = document.getElementById("ope");
+        var click = document.getElementById("click");
+        var queNum =$("#queNum").val;
+
+        var Ans = 0;
+        var sec = 0;
+        var count = 0;
+        var flag = 0; 
+        var right = 0;
+        var wrong = 0;
+        $("#btn_start").on("click", gamestart);
+
+        function gamestart() {
+            right = 0;
+            wrong = 0;
+            sec = 60;
+            count = 0;
+            flag = 1;
+            queNum = 1;
+            Ans = 0;
+
+            time.textContent = `剩餘時間:${sec}s`;
+            combo.textContent = count;
+            $('#anstxt').val("");
+            $('#result_score').addClass('hide');
+            check_start();
+            $("#btn_start").off("click", gamestart);
+            $("#anstxt").focus();
+
+            var start = setInterval(() => { //開始後，時間倒數
+                if (sec == 0) {
+                    flag = 0;
+                    clearInterval(start);
+                    $("#btn_start").on("click", gamestart);
+                    check_start();
+                    show_result();
+                }
+                else {
+                    sec--;
+                    time.textContent = `剩餘時間：${sec}s`;
+                }
+            }, 1000);
+            changeNum();
+        }
+            ////////////////////////////////////////
+            
+            function changeNum() {
+                var num_first = Math.floor(Math.random() * 10);
+                var num_second = Math.floor(Math.random() * 10);
+                var ope = Math.floor(Math.random() * 4);
+                $('#queNum').text(queNum);
+                switch (ope) {
+                    case 0:
+                        $(".que").text(num_first + "+" + num_second);
+                        Ans = num_first + num_second;
+                        break;
+                    case 1:
+                        $(".que").text(num_first + "-" + num_second);
+                        Ans = num_first - num_second;
+                        break;
+                    case 2:
+                        $(".que").text(num_first + "*" + num_second); 
+                        Ans = num_first * num_second;
+                        break;
+                    case 3:
+                        $(".que").text(num_first + "/" + num_second);
+                        Ans = num_first / num_second;
+                        break;
+                }
+                if(Ans % 1 != 0){
+                    changeNum();
+                }
+            }
+            $('#anstxt').on("keydown",function(e){
+                if(e.which == 13 && $('#anstxt').val() != ""){
+                    checkAns();
+                }
+            })
+            
+            function checkAns(){
+                var challenge_Num = $('#anstxt').val();
+                if (challenge_Num == Ans){
+                    queNum++;
+                    count++;
+                    right++;
+                    changeNum();
+                }else{
+                    wrong++;
+                    count--;
+                }
+                $('#anstxt').val("");
+                combo.textContent = count;
+            }
+            function show_result(){
+                var total = right - wrong ;
+                $('#result_score').removeClass('hide');
+                $("#right_count").text(right);
+                $("#wrong_count").text(wrong);
+                $("#total_score").text(total);
+            }
+        
+        function check_start(){
+            if(flag == 1){
+                $('#anstxt').prop("disabled",false);
+            }else{
+                $('#anstxt').prop("disabled",true);
+            }
+        }
+
+        
+        check_start();
+
+    
+    </script>
+</body>
+
+</html>
