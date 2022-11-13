@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="shape" style="width: 100px;height: 100px;background-color:red"></div>
+    <hr>
+    <button onclick="trans('a')">正方形</button>
+    <button onclick="trans('b')">圓形</button>
+    <button onclick="trans('c')">三角形</button>
+    <input type="text" value="#color" onchange="clr(this)">
+
+    <script>
+        let shape=document.getElementById("shape")
+        let nowclr="red";//全域變數，整頁代碼都能讀寫他
+        function trans(todo){
+            switch (todo) {
+                case 'a':
+                    shape.style=`width: 100px;height: 100px;background-color:${nowclr};`
+                    break;            
+                case 'b':
+                    shape.style=`width: 100px;height: 100px;background-color:${nowclr};border-radius:50%`
+                    break;
+                case 'c':
+                    shape.style=`width: 0px;height: 0px;border-left:50px solid transparent;border-right:50px solid transparent;border-bottom:100px solid ${nowclr};`
+                    break;
+            }
+        }
+        
+       function clr(chgclr){
+        //console.log(chgclr.value);
+        if(shape.style.backgroundColor) shape.style.backgroundColor=chgclr.value; //for正 圓
+        else shape.style.borderBottom=`100px solid ${chgclr.value}`; //for 三
+       nowclr=chgclr.value;
+       }
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test</title>
+</head>
+<body>
+    <script>
+    
+    /* 第一種
+         for (let i = 1; i <10; i++) {
+           for (let j = 1; j < 10; j++) {
+            document.write(`${i} * ${j}  = ${i*j}<br>`);
+            }
+            document.write(`<hr>`);
+            
+        }
+    */
+        
+    /*第二種
+        for (let i = 1,j = 1 ;j<10;j++ ) {
+            
+            document.write(`${i} * ${j}  = ${i*j}<br>`);
+            if(j==9){
+                i++;
+                j=0;
+                document.write(`<hr>`)
+            }
+            if(i==10) break;
+        }
+    */
+
+    </script>
+
+    <!---第三種--->
+    <table border = "1">
+        <tr>
+           <script> 
+            for (let i = 1; i <10; i++) {
+                if (i==4){document.write(`</tr><tr>)`)}
+                if (i==7){document.write(`</tr><tr>)`)}
+                document.write(`<td>`);
+                 for (let j = 1; j <10; j++) {
+                     document.write(`${i} * ${j}  = ${i*j}<br>`);
+            }
+            document.write(`</td>`);
+            } 
+            </script>
+        </tr>
+    </table>
+
+    
+</body>
+</html>
