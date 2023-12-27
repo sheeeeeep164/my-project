@@ -1,0 +1,6 @@
+rembg.egg-info/PKG-INFO
+rembg.egg-info/SOURCES.txt
+rembg.egg-info/dependency_links.txt
+rembg.egg-info/entry_points.txt
+rembg.egg-info/requires.txt
+rembg.egg-info/top_level.txt

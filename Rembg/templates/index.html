@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rembg</title>
+    <style>
+        .box{
+            margin: 0 auto;
+            width: 800px;
+            min-height: 1280px;
+            background-color: rgb(226, 230, 230);
+        }
+        .container{
+            width: 720px;
+            margin: 0 auto;
+            display: block;
+            background-color: rgb(226, 230, 230);
+        }
+        h1{
+            font-size: 64px;
+            text-align: center;
+        }
+        h3{
+            font-size: 28px;
+        }
+        form{
+            width: 720px;
+        }
+        .block{
+            border-style: dashed;
+        }
+        #previewImage{
+            width: 720px;
+        }
+        #processedImage{
+            width: 720px;
+        }
+        #runButton{
+            margin:10px 43%;
+            border-radius: 4px;
+            width: 100px;
+            height: 30px;
+        }
+        #runButton:hover{
+                cursor: pointer;
+                background-color: white;
+                color: red;
+        }
+        .loading {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin:10px 47%;
+        }
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="container">
+            <h1><b>Rembg</b></h1>
+            <h3>Please input your picture.</h3>
+            <form  action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="fileInput" id="fileInput" accept="image/*">
+                <img id="previewImage" alt="Preview Image" style="display: none;">
+                <div>
+                    <button type="button" id="runButton" style="display: none;">Rembg</button>
+                    <div id="loadingSpinner" class="loading"></div>
+                </div>
+            </form>
+            <div class="block" id="output_rembg" style="display: none;">
+                <span>Output:</span>
+                <img id="processedImage" alt="Processed Image" style="display: none;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var fileInput = document.getElementById('fileInput');
+        var previewImage = document.getElementById('previewImage');
+        var rembg_btn = document.getElementById('runButton');
+        var output_rembg = document.getElementById('output_rembg');
+        var processedImage = document.getElementById('processedImage');
+        var loadingSpinner = document.getElementById('loadingSpinner');
+
+        fileInput.addEventListener('change', function() {
+            var file = fileInput.files[0];
+
+            if (file && file.type.startsWith('image/')) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                    rembg_btn.style.display = 'block';
+                    output_rembg.style.display = 'none';
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                previewImage.style.display = 'none';
+                rembg_btn.style.display = 'none';
+            }
+        })
+        rembg_btn.addEventListener('click', function(e) {
+        var file = fileInput.files[0];
+        if (file) {
+            var formData = new FormData();
+            formData.append('fileInput', file);
+
+            rembg_btn.style.display = 'none';
+            loadingSpinner.style.display = 'inline-block';
+
+            var randomParam = '?' + new Date().getTime();
+            fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                processedImage.src = data.filename + randomParam;
+                processedImage.style.display = 'block';
+                output_rembg.style.display = 'block';
+                window.open(data.filename, '_blank');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                rembg_btn.style.display = 'block';
+            })
+            .finally(()=>{
+                rembg_btn.disabled = false;
+                loadingSpinner.style.display = 'none';
+            })
+        } else {
+            alert('Please select a file.');
+        }
+    });
+    </script>
+</body>
+</html>
